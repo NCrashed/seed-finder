@@ -1,0 +1,18 @@
+[package]
+name = "seed-finder"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bdk = { version = "0.26.0", features = [ ] }
+bitcoin = "0.29.2"
+bitcoincore-rpc-async = "3.0.1"
+clap = { version = "4.0.32", features = ["derive", "env"] }
+futures = "0.3.25"
+itertools = "0.10.5"
+lazy_static = "1.4.0"
+rayon = "1.6.1"
+tiny-bip39 = "1.0.0"
+tokio = { version = "1.24.1", features = ["full"] }
