@@ -51,7 +51,7 @@ struct PartialSeed {
 impl PartialSeed {
     fn new(seed: &str) -> Self {
         let words = seed
-            .split(" ")
+            .split(' ')
             .map(|w| if w == "*" { None } else { Some(w.to_owned()) })
             .collect();
         PartialSeed { words }
@@ -69,7 +69,7 @@ impl PartialSeed {
             offset /= 2048;
             *word = Some(wordlist.get_word((i as u16).into()).to_owned());
         }
-        join(words.into_iter().filter_map(|w| w), " ")
+        join(words.into_iter().flatten(), " ")
     }
 }
 
@@ -90,8 +90,8 @@ async fn sync_wallet(electrum_url: &str, network: Network, seed: &[u8]) -> Resul
     let client = Client::new(electrum_url)?;
     let blockchain = ElectrumBlockchain::from(client);
     let wallet = Wallet::new(
-        &format!("wpkh({}/0/*)", derived_key),
-        Some(&format!("wpkh({}/1/*)", derived_key)),
+        &format!("wpkh({derived_key}/0/*)"),
+        Some(&format!("wpkh({derived_key}/1/*)")),
         network,
         MemoryDatabase::default(),
     )?;
@@ -110,7 +110,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let language = Language::English;
     println!("First seed: {}", seed.guess_seed(args.offset, language));
     let unknown = seed.unknown_words();
-    println!("Unknown words: {}", unknown);
+    println!("Unknown words: {unknown}");
     let max_guesses = 2048u128.pow(unknown as u32);
     println!("Need to scan {} seeds", max_guesses - args.offset);
 
@@ -122,8 +122,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
             let electrum_url = args.electrum_url.clone();
             tokio::spawn(async move {
                 if let Ok(valid_guess) = Mnemonic::from_phrase(&guess, language) {
-                    println!("Valid guessed seed {} is: {}", offset, valid_guess);
-                    let balance = sync_wallet(&electrum_url,
+                    println!("Valid guessed seed {offset} is: {valid_guess}");
+                    let balance = sync_wallet(
+                        &electrum_url,
                         if args.testnet {
                             Network::Testnet
                         } else {
@@ -142,9 +143,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
                             .create(true)
                             .open(&outfile)
                             .unwrap();
-                        file.write(format!("{valid_guess}\n").as_bytes()).unwrap();
+                        file.write_all(format!("{valid_guess}\n").as_bytes()).unwrap();
 
-                        println!("WE FOUND IT! See the file {:?}", outfile);
+                        println!("WE FOUND IT! See the file {outfile:?}");
                         std::process::exit(0);
                     }
                 }
