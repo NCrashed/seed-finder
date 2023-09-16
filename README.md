@@ -19,3 +19,4 @@ cargo run --release
 
 You will see (maybe) restored seed in `found.txt`.
 
+Cleanup you bash history from the seed after all.
