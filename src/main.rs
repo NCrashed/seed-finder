@@ -40,7 +40,7 @@ struct Args {
     outfile: PathBuf,
 
     /// Output file where to save checkpoints
-    #[arg(short, long, default_value = "tcp://127.0.0.1:60001")]
+    #[arg(short, long, default_value = "ssl://bitcoin.grey.pw:50002")]
     electrum_url: String,
 }
 

@@ -11,13 +11,6 @@ in stdenv.mkDerivation rec {
     llvmPackages.libclang
     openssl
     cacert
-    sqlx-cli
-    #podman-compose
-    #docker-compose
-    sass
-    postgresql_11
-    niv
-    rocksdb
   ];
   shellHook = ''
   export LIBCLANG_PATH="${llvmPackages.libclang.lib}/lib"
